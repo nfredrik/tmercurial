@@ -10,10 +10,13 @@ Test::Test()
 {
   static const struct QCommandLineConfigEntry conf[] =
     {
-      { QCommandLine::Option, 'v', "verbose", "Verbose level (0-3)", QCommandLine::Mandatory },
+ //     { QCommandLine::Option, 'v', "verbose", "Verbose level (0-3)", QCommandLine::Mandatory },
       { QCommandLine::Switch, 'l', "list", "Show a list", QCommandLine::Optional },
-      { QCommandLine::Param, '\0', "target", "The target", QCommandLine::Mandatory },
-      { QCommandLine::Param, '\0', "source", "The sources", QCommandLine::MandatoryMultiple },
+      { QCommandLine::Switch, 'm', "yersion", "Show Version", QCommandLine::Optional },
+      { QCommandLine::Switch, 'x', "xersion", "Show Xersion", QCommandLine::Optional },
+      { QCommandLine::Switch, 's', "screenres", "Set screen resolution", QCommandLine::Optional },
+ //     { QCommandLine::Param, '\0', "target", "The target", QCommandLine::Mandatory },
+ //     { QCommandLine::Param, '\0', "source", "The sources", QCommandLine::MandatoryMultiple },
       QCOMMANDLINE_CONFIG_ENTRY_END
     };
   /*
@@ -26,8 +29,8 @@ Test::Test()
 
    cmdline = new QCommandLine(this);
    cmdline->setConfig(conf);
-   cmdline->enableVersion(true); // enable -v // --version
-   cmdline->enableHelp(false); // enable -h / --help
+ //  cmdline->enableVersion(true); // enable -v // --version
+   cmdline->enableHelp(true); // enable -h / --help
 
   connect(cmdline, SIGNAL(switchFound(const QString &)),
 	  this, SLOT(switchFound(const QString &)));
@@ -47,6 +50,11 @@ void
 Test::switchFound(const QString & name)
 {
   qWarning() << "Switch:" << name;
+
+  if (name.compare("screenres") == 0)
+      qWarning() << "Hurra!";
+  else
+      qWarning() << "no...";
 }
 
 void
