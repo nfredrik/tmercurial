@@ -3,6 +3,9 @@
 import urllib
 import re
 import csv
+import gdata.calendar.data
+import gdata.calendar.client
+import gdata.acl.data
 
 # 'OMX STOCKHOLM           359.39  -1.45'
 
@@ -14,12 +17,21 @@ class Storage:
         
         
 class Calender:
-    def store(self,  date):
+     def __init__(self):
+         self.cal_client = gdata.calendar.client.CalendarClient(source='Google-Calendar_Python_Sample-1.0')
+         self.cal_client.ClientLogin('fredrik.svard@gmail.com', 'fv!5#hoppa2lo', self.cal_client.source)
+         
+     def store(self,  date):
         cmd = "google calendar add --cal \"dagar\" \"Susanne dag "
         cmd +=date
         cmd += "\""
         print cmd
-            
+        
+     def _PrintOwnCalendars(self):
+        feed = self.cal_client.GetOwnCalendarsFeed()
+        print 'Printing owncalendars: %s' % feed.title.text
+        for i, a_calendar in zip(xrange(len(feed.entry)), feed.entry):
+          print '\t%s. %s' % (i, a_calendar.title.text,)
             
 class CSV(Storage):
     def display(self):
@@ -46,6 +58,8 @@ class textTv:
 # Howto get the string from method???
 
 calender = Calender()
+
+calender._PrintOwnCalendars()
 
 turn = csv.reader(open('dagar.csv', 'rb'), delimiter=' ', quotechar='|')
 
