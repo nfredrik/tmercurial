@@ -33,6 +33,20 @@ class Calender:
         for i, a_calendar in zip(xrange(len(feed.entry)), feed.entry):
           print '\t%s. %s' % (i, a_calendar.title.text,)
             
+            
+     def _InsertSingleEvent(self, title='dagar',
+              content='Susanne dag', where='Ostersund sjukhus',
+              start_time=None, end_time=None):
+           
+            new_event = self._InsertEvent(title, content, where, start_time, end_time,
+                recurrence_data=None)
+        
+            print 'New single event inserted: %s' % (new_event.id.text,)
+            print '\tEvent edit URL: %s' % (new_event.GetEditLink().href,)
+            print '\tEvent HTML URL: %s' % (new_event.GetHtmlLink().href,)
+        
+            return new_event
+            
 class CSV(Storage):
     def display(self):
         print self.date,  self.index,  self.deviation
@@ -66,3 +80,4 @@ turn = csv.reader(open('dagar.csv', 'rb'), delimiter=' ', quotechar='|')
 for row in turn:
     test =  ',' .join(row)
     calender.store(test)
+    calender.InsertSingleEvent(, , , test)
