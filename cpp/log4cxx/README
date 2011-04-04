@@ -1,0 +1,7 @@
+
+
+# qmake -project # to find relevant files ....
+
+# qmake # generate Makefile
+
+# make -j4  # compile!!!!
