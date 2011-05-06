@@ -2,14 +2,18 @@
 import os
 import struct
 
+BIG_BINARY = 'totaly.bin'
+BLOBSIZE = 10240
+FILLPATTERN = 0xff
+
 class Blob:
     def __init__(self, name):
         self.name = name
         self.fh = open(name,  'a+')
         self.size = os.path.getsize(name)
         print self.size
-        for n in range(0,  10240-self.size):
-            self.data = struct.pack('B', 0x11)
+        for n in range(0,  BLOBSIZE-self.size):
+            self.data = struct.pack('B', FILLPATTERN)
             self.fh.write(self.data)
         self.fh.close()
     def __str__(self):
@@ -19,15 +23,23 @@ class Blob:
 
 blob_list =  []
 
-blob_list.append(Blob('nisse.bin'))
-blob_list.append(Blob('pelle.bin'))
+# Append all blobs to one big binary 
+#blob_list.append(Blob('nisse.bin'))
+#blob_list.append(Blob('pelle.bin'))
 
-totalFily = open('totaly.bin', 'a+')
+for blob in  ['nisse.bin','pelle.bin' ]:
+    blob_list.append(Blob(blob))
+   
+   
+totalFily = open(BIG_BINARY, 'a+')
 
 for item in blob_list:
     totalFily.write(open(item.__str__()).read())
 
 totalFily.close()
+
+
+exit()
 
 size = os.path.getsize('totaly.bin')
 
