@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os
+import os,  sys
 import struct
 
 # TODO
@@ -20,11 +20,17 @@ BLOB2  =  'c30diu.dtb'
 BLOB3  = 'c30hmm.dtb'
 BLOB4 = 'c30mmh.dtb'
 
+def isprintable(s, codec='utf8'):
+    try: s.decode(codec)
+    except UnicodeDecodeError: return False
+    else: return True
+    
+    
 
 class Blob:
     def __init__(self, name):
    
-        self.name = ""   
+   
         if(os.path.exists(name) != True):
            raise("file do not exist")
         
@@ -33,7 +39,14 @@ class Blob:
             raise("to big blob")
             
         self.name = name
-        self.fh = open(name,  'a+')       
+        self.fh = open(name,  'a+')
+ 
+        self.fh.seek(0x4c) 
+        self.str.append(self.fh.read(1))
+        
+        while self.str.isalnum() :
+            self.sum.append(self.str)
+            self.str.append(self.fh.read(1))
             
         for n in range(0,  BLOBSIZE-self.size):
             self.data = struct.pack('B', FILLPATTERN)
@@ -54,7 +67,7 @@ try:
         blob_list.append(Blob(blob))
 
 except:
-    print "help some one raised and exception!"
+    print "help some one raised an exception!"
     sys.exit(2)
 
 
