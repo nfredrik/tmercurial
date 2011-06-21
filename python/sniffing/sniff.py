@@ -19,5 +19,5 @@ from scapy.all import *
 FMT_STRING = "%IP.src%:%TCP.sport% -> %IP.dst%:%TCP.dport% %2s,TCP.flags% : %TCP.payload%"
 
 
-sniff(filter="tcp port 10001", store=0,
+sniff(filter="tcp", store=0,
       prn = lambda x: x.sprintf(FMT_STRING))
