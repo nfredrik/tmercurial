@@ -13,8 +13,8 @@ import logging
 BIG_BINARY = 'serveral.dtb'
 BLOBSIZE = 1024 * 10
 FILLPATTERN = 0x00
-NAMESTART  = 0x4c
-
+BLOB_NAMESTART  = 0x4c
+MAX_BLOB_NAME_SIZE = 20
 class MyLogger:
    """
       My own logging class.
@@ -48,23 +48,27 @@ class DeviceTree:
       Convert a device tree file to a binary file
     """
     def __init__(self, name):
-#       logger.debug(self. __str__() + ' Constructor...' )
-       cmd ='./dtc'
-       if (not os.path.exists(cmd)):
+       self.cmd ='./dtc'
+       self.name = name
+       if (not os.path.exists(self.cmd)):
            raise MyExcept( 'no dt compiler!')
 
-       cmd+= '-b0 -p 1024 -O dtb ' + name + '.dts ' + ' -o ' + name +'.dtb'
+       self.cmd+= '-b0 -p 1024 -O dtb ' + self.name + '.dts ' + ' -o ' + self.name +'.dtb'
 
-       print 'I want to execute:' + cmd
+       print 'I want to execute:' + self.cmd
        return
        sys.exit(42)
 
-       (status, output) = commands.getstatusoutput(cmd)
+       (status, output) = commands.getstatusoutput(self.cmd)
        if status:
          raise MyExcept( 'command failed: ' + output)
 
-#    def __del__(self):
-#       logger.debug(self. __str__() + ' Destructor...' )
+    def generate_blob(self):
+       (status, output) = commands.getstatusoutput(self.cmd)
+       if status:
+         raise MyExcept( 'command failed: ' + output)
+         
+       return self.name 
 
     def __str__(self):
        return 'DeviceTree'
@@ -77,23 +81,22 @@ class Blob(MyLogger):
 
         name+= '.dtb'
         if (not os.path.exists(name)):
-           print("file do not exist")
            raise MyExcept( 'file do not exist:' + name)
 
         self.size = os.path.getsize(name)
         if (self.size < BLOBSIZE):
-            print("to big blob")
             raise MyExcept( 'too big blob:' + name)
 
         self.name = name
         self.fh = open(name,  'a+')
 
-        # TODO: get a better solution to read out ...
-        self.fh.seek(NAMESTART)
+        self.fh.seek(BLOB_NAMESTART)
         self.board = ''
-        for n in range(10):
-         self.board +=  self.fh.read(1)
-
+        for n in range(MAX_BLOB_NAME_SIZE):
+           self.token  = self.fh.read(1)
+           if self.token.isalnum() : 
+              self.board +=  self.token
+        
         for n in range(0,  BLOBSIZE-self.size):
             self.data = struct.pack('B', FILLPATTERN)
             self.fh.write(self.data)
